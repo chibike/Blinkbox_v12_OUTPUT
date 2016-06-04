@@ -93,6 +93,7 @@ ShiftRegisterObject::ShiftRegisterObject()
 void ShiftRegisterObject::begin( uint8_t latch )
 {
   _latch = latch;
+  pinMode(_latch, OUTPUT);
   SPI.setBitOrder(MSBFIRST);
   SPI.setDataMode(SPI_MODE0);
   SPI.setClockDivider(SPI_CLOCK_DIV2);
@@ -174,6 +175,11 @@ WheelObject::WheelObject()
 void WheelObject::begin( uint8_t in1, uint8_t in2, uint8_t pwm, uint8_t stb )
 {
   _in1,_in2,_pwm,_stb = in1, in2, pwm, stb;
+  pinMode(_in1, OUTPUT);
+  pinMode(_in2, OUTPUT);
+  pinMode(_pwm, OUTPUT);
+  pinMode(_stb, OUTPUT);
+  
   stop();
   standby();
 
