@@ -8,6 +8,7 @@ class HornObject
     void off();
     void flash();
     bool state();
+    
     void begin( uint8_t pin );
     void end();
     HornObject();
@@ -74,6 +75,7 @@ class ShiftRegisterObject
     void setState( byte state );
     byte state();
     bool getState( uint8_t index );
+    
     void begin( uint8_t latch );
     void end();
     ShiftRegisterObject();
@@ -154,6 +156,7 @@ class WheelObject
     void backward( uint8_t power );
     void stop();
     void standby();
+    
     void begin( uint8_t in1, uint8_t in2, uint8_t pwm, uint8_t stb );
     void end();
     WheelObject();
@@ -237,6 +240,7 @@ class SteeringObject
   public:
     void setheading( int8_t angle );
     int8_t heading();
+    
     void begin(uint8_t pin);
     void end();
     SteeringObject();
@@ -300,6 +304,7 @@ class LightObject
     void turnOffRightLights();
     bool getLeftLightState();
     bool getRightLightState();
+    
     void begin(uint8_t latch, uint8_t leftIndex, uint8_t rightIndex );
     void end();
     LightObject();
@@ -456,6 +461,7 @@ class HardwareObjects
     ShiftRegisterObject ShiftRegister;
     LineSensorObject LineSensor;
     HornObject Horn;
+    
     void begin();
     void end();
     HardwareObjects();
