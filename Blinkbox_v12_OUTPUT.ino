@@ -21,7 +21,6 @@ class HornObject
     void begin( uint8_t pin );
     void end();
     HornObject();
-    ~HornObject();
   private:
     bool _destroyed;
     uint8_t _pin;
@@ -46,7 +45,6 @@ class ShiftRegisterObject
     void begin( uint8_t latch );
     void end();
     ShiftRegisterObject();
-    ~ShiftRegisterObject();
   private:
     bool _destroyed;
     void _update();
@@ -71,7 +69,6 @@ class WheelObject
     void begin( uint8_t in1, uint8_t in2, uint8_t pwm, uint8_t stb );
     void end();
     WheelObject();
-    ~WheelObject();
   private:
     bool _destroyed;
     uint8_t _in1;
@@ -92,7 +89,6 @@ class SteeringObject
     void begin(uint8_t pin);
     void end();
     SteeringObject();
-    ~SteeringObject();
   private:
     Servo _myServo;
     bool _destroyed;
@@ -125,7 +121,6 @@ class LightObject
     void begin(uint8_t latch, uint8_t leftIndex, uint8_t rightIndex );
     void end();
     LightObject();
-    ~LightObject();
   private:
     ShiftRegisterObject _lightRegister;
     bool _destroyed;
@@ -139,7 +134,6 @@ class LineSensorObject
 {
   public:
     LineSensorObject();
-    ~LineSensorObject();
     void begin();
     void end();
   private:
@@ -155,12 +149,14 @@ class CompassSensorObject
     
     CompassSensorObject();
     void begin();
-    ~CompassSensorObject();
     void end();
   private:
     bool _destroyed;
     byte _address;
     int _targetHeading;
+    int _lastHeading;
+    uint8_t _diffThreshold;
+    bool _confirmHeading;
     void _i2c_wait_timeout( int timeout );   
 };
 
@@ -178,7 +174,6 @@ class HardwareObjects
     void begin();
     void end();
     HardwareObjects();
-    ~HardwareObjects();
   private:
     bool _destroyed;
 };
@@ -203,7 +198,6 @@ class Blink_OS
     
     Blink_OS();
     void begin();
-    ~Blink_OS();
     void end();
   private:
     #define RIGHT_CHA_PIN 2

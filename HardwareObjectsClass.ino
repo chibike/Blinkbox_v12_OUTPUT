@@ -8,11 +8,6 @@ void HardwareObjects::begin()
   _destroyed = false;
 }
 
-HardwareObjects::~HardwareObjects()
-{
-  end();
-}
-
 void HardwareObjects::end()
 {
   _destroyed = true;

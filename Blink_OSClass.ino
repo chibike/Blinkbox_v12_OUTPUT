@@ -45,11 +45,6 @@ void Blink_OS::begin()
   _destroyed = false;
 }
 
-Blink_OS::~Blink_OS()
-{
-  end();
-}
-
 void Blink_OS::end()
 {
   _destroyed = true;

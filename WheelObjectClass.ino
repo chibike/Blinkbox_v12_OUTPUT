@@ -3,9 +3,12 @@ WheelObject::WheelObject()
   _destroyed = true;
 }
 
-void WheelObject::begin( uint8_t in1, uint8_t in2, uint8_t pwm, uint8_t stb )
+void WheelObject::begin( uint8_t in1, uint8_t in2, uint8_t pwmm, uint8_t stb )
 {
-  _in1,_in2,_pwm,_stb = in1, in2, pwm, stb;
+  _in1 = in1;
+  _in2 = in2;
+  _pwm = pwmm;
+  _stb = stb;
   pinMode(_in1, OUTPUT);
   pinMode(_in2, OUTPUT);
   pinMode(_pwm, OUTPUT);
@@ -15,11 +18,6 @@ void WheelObject::begin( uint8_t in1, uint8_t in2, uint8_t pwm, uint8_t stb )
   standby();
 
   _destroyed = false;
-}
-
-WheelObject::~WheelObject()
-{
-  end();
 }
 
 void WheelObject::end()
@@ -32,17 +30,19 @@ void WheelObject::forward( uint8_t power )
 {
   if (_destroyed == true){return;}
   _power = power;
-  digitalWrite(_in1, LOW);
-  digitalWrite(_in2, HIGH);
+  digitalWrite(_in1, HIGH);
+  digitalWrite(_in2, LOW);
   analogWrite(_pwm, _power);
   digitalWrite(_stb, HIGH);
+  Serial.print("forward power = ");
+  Serial.println(_power);
 }
 
 void WheelObject::forward()
 {
   if (_destroyed == true){return;}
-  digitalWrite(_in1, LOW);
-  digitalWrite(_in2, HIGH);
+  digitalWrite(_in1, HIGH);
+  digitalWrite(_in2, LOW);
   analogWrite(_pwm, _power);
   digitalWrite(_stb, HIGH);
 }

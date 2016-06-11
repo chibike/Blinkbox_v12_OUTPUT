@@ -15,11 +15,6 @@ void ShiftRegisterObject::begin( uint8_t latch )
   _destroyed = false;
 }
 
-ShiftRegisterObject::~ShiftRegisterObject()
-{
-  end();
-}
-
 void ShiftRegisterObject::end()
 {
   _state = 0x00;

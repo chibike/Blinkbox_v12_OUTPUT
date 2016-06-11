@@ -13,11 +13,6 @@ void LightObject::begin( uint8_t latch, uint8_t leftIndex, uint8_t rightIndex )
   _destroyed = false;
 }
 
-LightObject::~LightObject()
-{
-  end();
-}
-
 void LightObject::end()
 {
   undoFlashLights();

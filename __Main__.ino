@@ -3,11 +3,22 @@
 Blink_OS Blink_OS_v12;
 void setup()
 {
+  Serial.begin(9600);
   Blink_OS_v12.begin();
+  delay(100);
+  Blink_OS_v12.pheripherals.Steering.set2center();
+  Blink_OS_v12.pheripherals.Wheels.forward( 150 );
+  int heading = Blink_OS_v12.pheripherals.CompassSensor.getHeading();
+  Serial.print("Heading = ");
+  Serial.println(heading);
+  Blink_OS_v12.pheripherals.CompassSensor.setTargetHeading( heading );
 }
 
 void loop()
 {
+  //Serial.println( Blink_OS_v12.pheripherals.CompassSensor.getTargetDeviation() );
+  Serial.println( Blink_OS_v12.pheripherals.CompassSensor.getHeading() );
+  delay(1000);
 }
 
 void shutdown()

@@ -1,3 +1,24 @@
+CompassSensorObject::CompassSensorObject()
+{
+  _destroyed = true;
+}
+
+void CompassSensorObject::begin()
+{
+  _address = 0x60;
+  _targetHeading = 0;
+  _lastHeading = 0;
+  _diffThreshold = 20;
+  _confirmHeading = true;
+  
+  _destroyed = false;
+}
+
+void CompassSensorObject::end()
+{
+  _destroyed = true;
+}
+
 void CompassSensorObject::_i2c_wait_timeout( int timeout)
 {
   long startTime = millis();
@@ -20,7 +41,23 @@ float CompassSensorObject::getHeading()
   if (Wire.available() > 0)
   {
     float angle = ( (int)Wire.read() << 8 ) | ( (int)Wire.read() & 0x0f );
-    return 360 - angle/10.0;
+    angle = 360.0 - ((float)angle/10.0);
+
+    if( _confirmHeading == true )
+    {
+      _confirmHeading = false;
+      return angle;
+    }
+    else if(angle-_diffThreshold >= _lastHeading && angle+_diffThreshold <= _lastHeading)
+    {
+      _lastHeading = angle;
+      return angle;
+    }
+    else
+    {
+      _confirmHeading = true;
+      return getHeading();
+    }
   }
   else
   {
@@ -67,27 +104,3 @@ void CompassSensorObject::setTargetHeading(int heading)
   }
   _targetHeading = heading;
 }
-
-CompassSensorObject::CompassSensorObject()
-{
-  _destroyed = true;
-}
-
-void CompassSensorObject::begin()
-{
-  _address = 0x60;
-  _targetHeading = 0;
-  
-  _destroyed = false;
-}
-
-CompassSensorObject::~CompassSensorObject()
-{
-  end();
-}
-
-void CompassSensorObject::end()
-{
-  _destroyed = true;
-}
-

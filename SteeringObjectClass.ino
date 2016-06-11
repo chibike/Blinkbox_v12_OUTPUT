@@ -15,11 +15,6 @@ void SteeringObject::begin( uint8_t pin )
   _destroyed = false;
 }
 
-SteeringObject::~SteeringObject()
-{
-  end();
-}
-
 void SteeringObject::end()
 {
   _destroyed = true;

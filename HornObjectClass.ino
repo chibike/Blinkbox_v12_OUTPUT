@@ -11,11 +11,6 @@ void HornObject::begin( uint8_t pin )
   _destroyed = false;
 }
 
-HornObject::~HornObject()
-{
-  end();
-}
-
 void HornObject::end()
 {
   undoFlash();
