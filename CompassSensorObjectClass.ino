@@ -38,6 +38,8 @@ float CompassSensorObject::getHeading()
   if (Wire.available() > 0)
   {
     uint16_t reading = (int)(( ((int)Wire.read()) << 8 ) | ( ((int)Wire.read()) & 0x0f ));
+    Serial.print("reading = ");
+    Serial.println(reading);
     float angle = (float)reading/10.0;
     angle = 360 - angle;
     _errorCounter = 0;
@@ -53,6 +55,8 @@ float CompassSensorObject::getHeading()
     else
     {
       _errorCounter++;
+      Serial.print("_errorCounter = ");
+      Serial.println(_errorCounter);
       return getHeading();
     }
   }

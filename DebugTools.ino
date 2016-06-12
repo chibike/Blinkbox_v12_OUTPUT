@@ -28,7 +28,7 @@ bool ErrorMonitor::appendError( float error )
   {
     return false;
   }
-  _errorBuffer[_index++] = 0;
+  _errorBuffer[_index++] = round(error);
   return true;
 }
 

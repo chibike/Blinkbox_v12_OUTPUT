@@ -115,22 +115,23 @@ void Blink_OS::fd_debug(uint8_t power, uint8_t samples)
   delay(200);
   pheripherals.CompassSensor.setTargetHeading( pheripherals.CompassSensor.getHeading() );
   delay(10);
-  pheripherals.Wheels.forward(power);
+  
   const float Kp = -0.85;
-  const uint16_t updateTime = 250;
+  const uint16_t updateTime = 1000;
   long lastUpdateTime = 0;
   ErrorMonitor bar;
   bar.begin(samples, 200, -200, 0);
-  
+
+  //pheripherals.Wheels.forward(power);
   while(1)
   {
     if( millis() - lastUpdateTime > updateTime )
     {
       lastUpdateTime = millis();
       float error = pheripherals.CompassSensor.getTargetDeviation();
+      //Serial.println(error);
       float value = Kp * error;
       value = constrain(value, -50, 50);
-      Serial.println(AVERAGE_DISTANCE);
       pheripherals.Steering.setheading( value );
 
       if( bar.appendError( error ) == false )
@@ -142,6 +143,7 @@ void Blink_OS::fd_debug(uint8_t power, uint8_t samples)
   }
   
   pheripherals.Wheels.stop();
+  bar.plotTable();
 }
 
 #endif

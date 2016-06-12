@@ -5,11 +5,16 @@ void setup()
 {
   Serial.begin(9600);
   Blink_OS_v12.begin();
-  Blink_OS_v12.forwardDistance(120, 100);
+  //Blink_OS_v12.fd_debug(120, 100);
+  Blink_OS_v12.pheripherals.CompassSensor.setTargetHeading( Blink_OS_v12pheripherals.CompassSensor.getHeading() );
 }
 
 void loop()
 {
+  Serial.print("Target Error = ");
+  Serial.println( Blink_OS_v12.pheripherals.CompassSensor.getTargetDeviation() );
+  Serial.print("Heading = ");
+  Serial.println( Blink_OS_v12.pheripherals.CompassSensor.getHeading() );
   delay(250);
 }
 
