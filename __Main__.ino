@@ -5,6 +5,7 @@ void setup()
 {
   Serial.begin(9600);
   Blink_OS_v12.begin();
+  Blink_OS_v12.forwardDistance(120, 100);
 }
 
 void loop()

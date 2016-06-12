@@ -2,6 +2,8 @@
 #include <SPI.h>
 #include <Servo.h>
 
+#define DEBUG_TOOLS
+
 void shutdown();
 void RIGHT_WHEEL_ISR();
 void LEFT_WHEEL_ISR();
@@ -183,13 +185,16 @@ class Blink_OS
   #define COMP_ADDRESS 0x00
   public:
     HardwareObjects pheripherals;
-    void forwardDistance(uint16_t distance){}
-    void arcForwardDistance(int radius, uint16_t distance){}
-    void backwardDistance(uint16_t distance){}
-    void arcBackwardDistance(int radius, uint16_t distance){}
-
+    void forwardDistance(uint8_t power, unsigned int distance);
+    void arcForwardDistance(uint8_t power, int radius, unsigned int distance){}
+    void backwardDistance(uint8_t power, unsigned int distance){}
+    void arcBackwardDistance(uint8_t power, int radius, unsigned int distance){}
+#ifdef DEBUG_TOOLS
+    void fd_debug(uint8_t power, uint8_t samples);
+#endif
     void _RIGHT_WHEEL_ISR();
     void _LEFT_WHEEL_ISR();
+    void _RESET_WHEEL_COUNTER();
     void _RECEIVE_EVENT();
     void _REQUEST_EVENT(){}
     void _SCHEDULER();
@@ -207,3 +212,28 @@ class Blink_OS
     volatile float _rightWheelDisplacement;
     volatile float _wheelSpeed;
 };
+
+#ifdef DEBUG_TOOLS
+
+#define DEBUG
+class ErrorMonitor
+{
+  public:
+    bool appendError( float error );
+    void plotTable();
+    
+    ErrorMonitor( void );
+    void begin(uint8_t graphWidth, float maxPossibleError, float minPossibleError, float centerVal);
+    void end();
+  private:
+    boolean _destroyed;
+    uint8_t _graphWidth;
+    uint8_t _graphHeight;
+    uint8_t _index;
+    int _maxPossibleError;
+    int _minPossibleError;
+    int _centerOn;
+    int _errorBuffer[];
+};
+
+#endif
