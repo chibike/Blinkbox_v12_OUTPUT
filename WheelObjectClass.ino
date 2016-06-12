@@ -34,8 +34,6 @@ void WheelObject::forward( uint8_t power )
   digitalWrite(_in2, LOW);
   analogWrite(_pwm, _power);
   digitalWrite(_stb, HIGH);
-  Serial.print("forward power = ");
-  Serial.println(_power);
 }
 
 void WheelObject::forward()

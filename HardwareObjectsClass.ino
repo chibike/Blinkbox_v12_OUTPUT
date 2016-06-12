@@ -8,6 +8,7 @@ void HardwareObjects::begin()
   _destroyed = false;
 }
 
+#
 void HardwareObjects::end()
 {
   _destroyed = true;

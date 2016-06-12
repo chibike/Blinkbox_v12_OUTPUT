@@ -35,6 +35,7 @@ void Blink_OS::begin()
 
   //Begin Communication
   Wire.begin(I2C_ADDRESS);
+  Wire.setTimeout(1000);
   Wire.onReceive(RECEIVE_EVENT);
   Wire.onRequest(REQUEST_EVENT);
 

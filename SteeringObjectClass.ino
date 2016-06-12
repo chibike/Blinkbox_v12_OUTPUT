@@ -6,11 +6,11 @@ SteeringObject::SteeringObject()
 void SteeringObject::begin( uint8_t pin )
 {
   _myServo.attach(pin);
-  _center = 103;
+  _center = 100;
   _angle = 0;
-  _maxAngle = 150;
-  _minAngle = 55;
-  setheading(_center);
+  _maxAngle = _center + 45;
+  _minAngle = _center - 45;
+  set2center();
 
   _destroyed = false;
 }
@@ -24,15 +24,15 @@ void SteeringObject::end()
 void SteeringObject::setheading( int8_t angle )
 {
   if (_destroyed == true){return;}
-  _angle = constrain(angle + _center, _minAngle, _maxAngle);
+  angle = constrain(angle, -45, 45);
+  _angle = constrain((int)(-1*angle) + _center, _minAngle, _maxAngle);
   _myServo.write(_angle);
 }
 
 void SteeringObject::set2center()
 {
   if (_destroyed == true){return;}
-  _angle = 0;
-  setheading(_angle);
+  setheading(0);
 }
 
 int8_t SteeringObject::heading()

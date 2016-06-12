@@ -7,9 +7,6 @@ void CompassSensorObject::begin()
 {
   _address = 0x60;
   _targetHeading = 0;
-  _lastHeading = 0;
-  _diffThreshold = 20;
-  _confirmHeading = true;
   
   _destroyed = false;
 }
@@ -36,32 +33,28 @@ float CompassSensorObject::getHeading()
   Wire.endTransmission();
 
   Wire.requestFrom(_address, 2);
-  _i2c_wait_timeout(100);
+  _i2c_wait_timeout(200);
 
   if (Wire.available() > 0)
   {
-    float angle = ( (int)Wire.read() << 8 ) | ( (int)Wire.read() & 0x0f );
-    angle = 360.0 - ((float)angle/10.0);
-
-    if( _confirmHeading == true )
-    {
-      _confirmHeading = false;
-      return angle;
-    }
-    else if(angle-_diffThreshold >= _lastHeading && angle+_diffThreshold <= _lastHeading)
-    {
-      _lastHeading = angle;
-      return angle;
-    }
-    else
-    {
-      _confirmHeading = true;
-      return getHeading();
-    }
+    uint16_t reading = (int)(( ((int)Wire.read()) << 8 ) | ( ((int)Wire.read()) & 0x0f ));
+    float angle = (float)reading/10.0;
+    angle = 360 - angle;
+    _errorCounter = 0;
+    return angle;
   }
   else
   {
-    return 0;
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getHeading();
+    }
   }
 }
 
@@ -69,7 +62,7 @@ float CompassSensorObject::getTargetDeviation()
 {
   if ( _destroyed == true ){return 0;}
   float trueHeading = getHeading();
-  switch( round(trueHeading) )
+  switch( (int)round(trueHeading) )
   {
     case 0:
     case 360:

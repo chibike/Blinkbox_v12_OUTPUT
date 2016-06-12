@@ -93,10 +93,10 @@ class SteeringObject
     Servo _myServo;
     bool _destroyed;
     byte _pin;
-    int8_t _angle;
+    uint8_t _angle;
     int8_t _center;
-    int8_t _maxAngle;
-    int8_t _minAngle;
+    uint8_t _maxAngle;
+    int _minAngle;
 };
 
 class LightObject
@@ -154,9 +154,7 @@ class CompassSensorObject
     bool _destroyed;
     byte _address;
     int _targetHeading;
-    int _lastHeading;
-    uint8_t _diffThreshold;
-    bool _confirmHeading;
+    uint8_t _errorCounter;
     void _i2c_wait_timeout( int timeout );   
 };
 
