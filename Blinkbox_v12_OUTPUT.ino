@@ -142,13 +142,27 @@ class LineSensorObject
     bool _destroyed;
 };
 
+#define ENABLE_COMPASS_FULL_DEF
 class CompassSensorObject
 {
   public:
     float getHeading();
     float getTargetDeviation();
     void setTargetHeading( int heading );
-    
+#ifdef ENABLE_COMPASS_FULL_DEF
+    int8_t getPitch();
+    int8_t getRoll();
+    int16_t getMagX();
+    int16_t getMagY();
+    int16_t getMagZ();
+    int16_t getAccX();
+    int16_t getAccY();
+    int16_t getAccZ();
+    int16_t getGyrX();
+    int16_t getGyrY();
+    int16_t getGyrZ();
+    int16_t getTemp();
+#endif
     CompassSensorObject();
     void begin();
     void end();

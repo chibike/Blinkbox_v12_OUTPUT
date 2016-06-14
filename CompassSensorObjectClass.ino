@@ -41,7 +41,8 @@ float CompassSensorObject::getHeading()
     Serial.print("reading = ");
     Serial.println(reading);
     float angle = (float)reading/10.0;
-    angle = 360 - angle;
+    Serial.print("reading angle = ");
+    Serial.println(angle);
     _errorCounter = 0;
     return angle;
   }
@@ -101,3 +102,379 @@ void CompassSensorObject::setTargetHeading(int heading)
   }
   _targetHeading = heading;
 }
+
+#ifdef ENABLE_COMPASS_FULL_DEF
+
+int8_t CompassSensorObject::getPitch()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(4);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 1);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int8_t pitch = Wire.read();
+    _errorCounter = 0;
+    return pitch;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getPitch();
+    }
+  }
+}
+
+int8_t CompassSensorObject::getRoll()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(5);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 1);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int8_t roll = Wire.read();
+    _errorCounter = 0;
+    return roll;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getRoll();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getMagX()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(6);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t magX = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return magX;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getMagX();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getMagY()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(8);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t magY = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return magY;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getMagY();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getMagZ()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(10);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t magZ = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return magZ;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getMagZ();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getAccX()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(12);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t accX = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return accX;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getAccX();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getAccY()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(14);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t accY = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return accY;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getAccY();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getAccZ()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(16);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t accZ = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return accZ;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getAccZ();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getGyrX()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(18);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t gyrX = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return gyrX;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getGyrX();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getGyrY()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(20);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t gyrY = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return gyrY;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getGyrY();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getGyrZ()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(22);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t gyrZ = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return gyrZ;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getGyrZ();
+    }
+  }
+}
+
+int16_t CompassSensorObject::getTemp()
+{
+  if ( _destroyed == true ){return 0;}
+  Wire.beginTransmission(_address);
+  Wire.write(24);
+  Wire.endTransmission();
+
+  Wire.requestFrom(_address, 2);
+  _i2c_wait_timeout(200);
+
+  if (Wire.available() > 0)
+  {
+    int16_t temp = ((int)Wire.read() << 8) | ((int)Wire.read() & 0x00ff);
+    _errorCounter = 0;
+    return temp;
+  }
+  else
+  {
+    if( _errorCounter >= 5 )
+    {
+      _errorCounter = 0;
+      return 0;
+    }
+    else
+    {
+      _errorCounter++;
+      return getTemp();
+    }
+  }
+}
+
+#endif

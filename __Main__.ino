@@ -13,9 +13,7 @@ void loop()
 {
   Serial.print("Target Error = ");
   Serial.println( Blink_OS_v12.pheripherals.CompassSensor.getTargetDeviation() );
-  Serial.print("Heading = ");
-  Serial.println( Blink_OS_v12.pheripherals.CompassSensor.getHeading() );
-  delay(250);
+  delay(750);
 }
 
 void shutdown()
