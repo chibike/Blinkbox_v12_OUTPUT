@@ -2,7 +2,7 @@
 #include <SPI.h>
 #include <Servo.h>
 
-#define DEBUG_TOOLS
+//#define DEBUG_TOOLS
 
 void shutdown();
 void RIGHT_WHEEL_ISR();
@@ -149,6 +149,8 @@ class CompassSensorObject
     float getHeading();
     float getTargetDeviation();
     void setTargetHeading( int heading );
+    bool onStall();
+    
 #ifdef ENABLE_COMPASS_FULL_DEF
     int8_t getPitch();
     int8_t getRoll();
@@ -197,12 +199,16 @@ class Blink_OS
   #define I2C_ADDRESS 0x00
   #define MCU2_ADDRESS 0x00
   #define COMP_ADDRESS 0x00
+  #define RESTART_PIN 0
   public:
     HardwareObjects pheripherals;
     void forwardDistance(uint8_t power, unsigned int distance);
-    void arcForwardDistance(uint8_t power, int radius, unsigned int distance){}
-    void backwardDistance(uint8_t power, unsigned int distance){}
-    void arcBackwardDistance(uint8_t power, int radius, unsigned int distance){}
+    void arcForwardDistance(uint8_t power, int radius, unsigned int distance);
+    void backwardDistance(uint8_t power, unsigned int distance);
+    void arcBackwardDistance(uint8_t power, int radius, unsigned int distance);
+
+    void restart();
+    void shutdown();
 #ifdef DEBUG_TOOLS
     void fd_debug(uint8_t power, uint8_t samples);
 #endif
@@ -210,7 +216,7 @@ class Blink_OS
     void _LEFT_WHEEL_ISR();
     void _RESET_WHEEL_COUNTER();
     void _RECEIVE_EVENT();
-    void _REQUEST_EVENT(){}
+    void _REQUEST_EVENT();
     void _SCHEDULER();
     
     Blink_OS();
@@ -225,6 +231,7 @@ class Blink_OS
     volatile float _leftWheelDisplacement;
     volatile float _rightWheelDisplacement;
     volatile float _wheelSpeed;
+    float _targetSpeed;
 };
 
 #ifdef DEBUG_TOOLS

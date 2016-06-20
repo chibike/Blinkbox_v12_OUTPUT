@@ -5,6 +5,7 @@ Blink_OS::Blink_OS()
 
 void Blink_OS::begin()
 {
+  noInterrupts();
   //Begin Pheripherals
   pheripherals.begin();
   pheripherals.Wheels.begin(12, 10, 6, 4);//in1,in2,pwm,stb
@@ -15,7 +16,6 @@ void Blink_OS::begin()
   pheripherals.CompassSensor.begin();
 
   //Begin Timer
-  cli();
   TCCR2A = 0;
   TCCR2B = 0;
   TCNT2 = 0;
@@ -23,7 +23,6 @@ void Blink_OS::begin()
   TCCR2A |= (1<<WGM21);
   TCCR2B |= (1<<CS22);
   TIMSK2 |= (1<<OCIE2A);
-  sei();
 
   //Begin Wheel ISR
   pinMode(RIGHT_CHA_PIN, INPUT_PULLUP);
@@ -32,6 +31,7 @@ void Blink_OS::begin()
   pinMode(LEFT_CHB_PIN, INPUT_PULLUP);
   attachInterrupt(0, RIGHT_WHEEL_ISR, CHANGE);
   attachInterrupt(1, LEFT_WHEEL_ISR, CHANGE);
+  _targetSpeed = 0;
 
   //Begin Communication
   Wire.begin(I2C_ADDRESS);
@@ -44,6 +44,7 @@ void Blink_OS::begin()
   #endif
   
   _destroyed = false;
+  interrupts();
 }
 
 void Blink_OS::end()
@@ -82,10 +83,10 @@ void Blink_OS::forwardDistance(uint8_t power, unsigned int distance)
   pheripherals.CompassSensor.setTargetHeading( pheripherals.CompassSensor.getHeading() );
   delay(10);
   pheripherals.Wheels.forward(power);
-  const float Kp = -0.85;
+  
+  const float Kp = 1.2;
   const uint16_t updateTime = 250;
   long lastUpdateTime = 0;
-  
   while(AVERAGE_DISTANCE < distance)
   {
     if( millis() - lastUpdateTime > updateTime )
@@ -106,6 +107,7 @@ void Blink_OS::forwardDistance(uint8_t power, unsigned int distance)
 
 void Blink_OS::fd_debug(uint8_t power, uint8_t samples)
 {
+  Serial.println("Begining Debug");
   if ( _destroyed == true ){return;}
   pheripherals.Wheels.stop();
   _RESET_WHEEL_COUNTER();
@@ -116,22 +118,25 @@ void Blink_OS::fd_debug(uint8_t power, uint8_t samples)
   pheripherals.CompassSensor.setTargetHeading( pheripherals.CompassSensor.getHeading() );
   delay(10);
   
-  const float Kp = -0.85;
-  const uint16_t updateTime = 1000;
+  const float Kp = 2;
+  const uint16_t updateTime = 250;
   long lastUpdateTime = 0;
   ErrorMonitor bar;
   bar.begin(samples, 200, -200, 0);
 
-  //pheripherals.Wheels.forward(power);
+  pheripherals.Wheels.forward(power);
   while(1)
   {
     if( millis() - lastUpdateTime > updateTime )
     {
       lastUpdateTime = millis();
       float error = pheripherals.CompassSensor.getTargetDeviation();
-      //Serial.println(error);
+      Serial.println(error);
+      
       float value = Kp * error;
       value = constrain(value, -50, 50);
+      Serial.print("value = ");
+      Serial.println(value);
       pheripherals.Steering.setheading( value );
 
       if( bar.appendError( error ) == false )
@@ -190,7 +195,6 @@ void Blink_OS::_RECEIVE_EVENT()
   #define BWD_DIST    0x04
   #define STB         0x05
   #define ST_HD       0x06
-  #define ST_THD      0x07
   #define ST_PWR      0x08
   #define LT_IND      0x09
   #define RT_IND      0x10
@@ -200,9 +204,6 @@ void Blink_OS::_RECEIVE_EVENT()
   #define PAUSE       0x14
   #define PLAY        0x15
   #define FOLLOW_LINE 0x16
-  #define DWN_MAP     0x17
-  #define END_MAP     0x18
-  #define HDL         0x19
   #define TRN_FWD     0x20
   #define TRN_BWD     0x21
   #define AVD_OBS     0x23
@@ -290,11 +291,37 @@ void Blink_OS::_SCHEDULER()
     lastRightDisplacment = _rightWheelDisplacement;
 
     #ifdef SPEED_CONTROL
-    //pass
+    float Error = _targetSpeed - _wheelSpeed;
+    
+    #endif
+
+    //#define STALL_CONTROL
+    #ifdef STALL_CONTROL
+    if( pheripherals.CompassSensor.onStall() == true )
+    {
+      pheripherals.Wheels.setPower( pheripherals.Wheels.power()/2 );
+    }
     #endif
 
     pheripherals.Lights.flashUpdate();
     pheripherals.ShiftRegister.flashUpdate();
     pheripherals.Horn.flashUpdate();
+  }
+}
+
+void Blink_OS::restart()
+{
+  digitalWrite(RESTART_PIN, LOW);
+}
+
+void Blink_OS::shutdown()
+{
+  if( !_destroyed )
+  {
+    end();
+  }
+  else
+  {
+     while(1);
   }
 }

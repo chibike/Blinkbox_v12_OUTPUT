@@ -74,6 +74,7 @@ void WheelObject::setPower( uint8_t power )
 {
   if (_destroyed == true){return;}
   _power = power;
+  analogWrite(_pwm, _power);
 }
 
 void WheelObject::stop()

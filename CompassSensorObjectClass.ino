@@ -37,12 +37,17 @@ float CompassSensorObject::getHeading()
 
   if (Wire.available() > 0)
   {
-    uint16_t reading = (int)(( ((int)Wire.read()) << 8 ) | ( ((int)Wire.read()) & 0x0f ));
-    Serial.print("reading = ");
-    Serial.println(reading);
+    int reading = 0;
+    byte data1 = Wire.read();
+    byte data2 = Wire.read();
+    reading = (reading | data1) << 8;
+    reading = reading | data2;
+    
     float angle = (float)reading/10.0;
-    Serial.print("reading angle = ");
-    Serial.println(angle);
+    if (angle >= 360 || angle < 0)
+    {
+      angle = 0.0;
+    }
     _errorCounter = 0;
     return angle;
   }
@@ -56,8 +61,6 @@ float CompassSensorObject::getHeading()
     else
     {
       _errorCounter++;
-      Serial.print("_errorCounter = ");
-      Serial.println(_errorCounter);
       return getHeading();
     }
   }
@@ -101,6 +104,19 @@ void CompassSensorObject::setTargetHeading(int heading)
       }
   }
   _targetHeading = heading;
+}
+
+bool CompassSensorObject::onStall()
+{
+  if ( _destroyed == true ){return false;}
+  if( abs( getAccY() ) < 3 && abs( getAccX() < 3) )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 #ifdef ENABLE_COMPASS_FULL_DEF
