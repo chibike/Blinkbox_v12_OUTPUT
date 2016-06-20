@@ -33,7 +33,7 @@ void RECEIVE_EVENT(int howmany)
 
 void REQUEST_EVENT()
 {
-  Blink_OS_v12._REQUEST_EVENT();
+  //Blink_OS_v12._REQUEST_EVENT();
 }
 
 ISR(TIMER2_COMPA_vect)

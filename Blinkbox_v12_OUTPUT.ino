@@ -2,7 +2,7 @@
 #include <SPI.h>
 #include <Servo.h>
 
-//#define DEBUG_TOOLS
+#define DEBUG_TOOLS
 
 void shutdown();
 void RIGHT_WHEEL_ISR();
@@ -211,6 +211,12 @@ class Blink_OS
     void shutdown();
 #ifdef DEBUG_TOOLS
     void fd_debug(uint8_t power, uint8_t samples);
+#endif
+#ifdef SPEED_CONTROL
+    void setSpeed( float speed );
+    float speed();
+    void brake();
+    void slowdown();
 #endif
     void _RIGHT_WHEEL_ISR();
     void _LEFT_WHEEL_ISR();

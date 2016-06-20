@@ -199,11 +199,12 @@ void Blink_OS::_RECEIVE_EVENT()
   #define LT_IND      0x09
   #define RT_IND      0x10
   #define FL_AL       0x11
-  #define FL_HDL      0x12
-  #define FL_HRN      0x13
-  #define PAUSE       0x14
-  #define PLAY        0x15
-  #define FOLLOW_LINE 0x16
+  #define HDL         0x12
+  #define FL_HDL      0x13
+  #define FL_HRN      0x14
+  #define PAUSE       0x15
+  #define PLAY        0x16
+  #define FOLLOW_LINE 0x17
   #define TRN_FWD     0x20
   #define TRN_BWD     0x21
   #define AVD_OBS     0x23
@@ -292,6 +293,8 @@ void Blink_OS::_SCHEDULER()
 
     #ifdef SPEED_CONTROL
     float Error = _targetSpeed - _wheelSpeed;
+    int power = 127 + 10*(Error);
+    pheripherals.Wheels.setPower(abs(power));
     
     #endif
 
@@ -309,6 +312,27 @@ void Blink_OS::_SCHEDULER()
   }
 }
 
+#ifdef SPEED_CONTROL
+void Blink_OS::setSpeed( float speed )
+{
+  _targetSpeed = speed;
+}
+float Blink_OS::speed()
+{
+  return _targetSpeed;
+}
+void Blink_OS::brake()
+{
+  _targetSpeed = 0;
+  pheripherals.Wheels.stop();
+}
+
+void Blink_OS::slowdown()
+{
+  _targetSpeed = _targetSpeed/2;
+  pheripherals.Wheels.setPower( pheripherals.Wheels.power()/2 );
+}
+#endif
 void Blink_OS::restart()
 {
   digitalWrite(RESTART_PIN, LOW);
