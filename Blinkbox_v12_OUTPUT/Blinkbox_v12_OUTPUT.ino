@@ -4,6 +4,13 @@
 
 #define DEBUG_TOOLS
 //#define SPEED_CONTROL
+#define I2C_ADDRESS 8
+#define MCU2_ADDRESS 7
+#define RESTART_PIN 0
+#define RIGHT_CHA_PIN 2
+#define RIGHT_CHB_PIN A1
+#define LEFT_CHA_PIN  3
+#define LEFT_CHB_PIN  7
 
 void shutdown();
 void RIGHT_WHEEL_ISR();
@@ -197,10 +204,6 @@ class HardwareObjects
 
 class Blink_OS
 {
-  #define I2C_ADDRESS 0x00
-  #define MCU2_ADDRESS 0x00
-  #define COMP_ADDRESS 0x00
-  #define RESTART_PIN 0
   public:
     HardwareObjects pheripherals;
     void forwardDistance(uint8_t power, unsigned int distance);
@@ -230,10 +233,6 @@ class Blink_OS
     void begin();
     void end();
   private:
-    #define RIGHT_CHA_PIN 2
-    #define RIGHT_CHB_PIN A1
-    #define LEFT_CHA_PIN  3
-    #define LEFT_CHB_PIN  7
     boolean _destroyed;
     volatile float _leftWheelDisplacement;
     volatile float _rightWheelDisplacement;
