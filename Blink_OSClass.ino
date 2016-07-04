@@ -9,10 +9,10 @@ void Blink_OS::begin()
   //Begin Pheripherals
   pheripherals.begin();
   pheripherals.Wheels.begin(12, 10, 6, 4);//in1,in2,pwm,stb
-  pheripherals.Lights.begin(8, 7, 8);//latch,leftIndex,rightIndex
+  pheripherals.Lights.begin(8, 7, 6);//latch,leftIndex,rightIndex
   pheripherals.Steering.begin(5);//pin
   pheripherals.ShiftRegister.begin(8);//latch
-  pheripherals.Horn.begin(9);//pin
+  pheripherals.Horn.begin(A3);//pin
   pheripherals.CompassSensor.begin();
 
   //Begin Timer
@@ -83,23 +83,27 @@ void Blink_OS::forwardDistance(uint8_t power, unsigned int distance)
   pheripherals.CompassSensor.setTargetHeading( pheripherals.CompassSensor.getHeading() );
   delay(10);
   pheripherals.Wheels.forward(power);
-  
-  const float Kp = 1.2;
-  const uint16_t updateTime = 250;
-  long lastUpdateTime = 0;
   while(AVERAGE_DISTANCE < distance)
   {
-    if( millis() - lastUpdateTime > updateTime )
-    {
-      lastUpdateTime = millis();
-      float error = pheripherals.CompassSensor.getTargetDeviation();
-      float value = Kp * error;
-      value = constrain(value, -50, 50);
-      Serial.println(AVERAGE_DISTANCE);
-      pheripherals.Steering.setheading( value );
-    }
   }
   
+  pheripherals.Wheels.stop();
+}
+
+void Blink_OS::backwardDistance(uint8_t power, unsigned int distance)
+{
+  if ( _destroyed == true ){return;}
+  
+  pheripherals.Wheels.stop();
+  _RESET_WHEEL_COUNTER();
+  #define AVERAGE_DISTANCE (float)(_leftWheelDisplacement+_rightWheelDisplacement)/2
+
+  pheripherals.Steering.set2center();
+  delay(200);
+  pheripherals.CompassSensor.setTargetHeading( pheripherals.CompassSensor.getHeading() );
+  delay(10);
+  pheripherals.Wheels.backward(power);
+  while(abs(AVERAGE_DISTANCE) < distance){}
   pheripherals.Wheels.stop();
 }
 
@@ -222,13 +226,13 @@ void Blink_OS::_RECEIVE_EVENT()
       pheripherals.Wheels.forward();
       break;
     case FWD_DIST:
-      //forwardDistance( (uint16_t)( ((((uint8_t)Wire.read()) << 8) & 0xff00) | (uint8_t)Wire.read() ) );
+      forwardDistance( (uint8_t)Wire.read(), (uint16_t)( ((((uint8_t)Wire.read()) << 8) & 0xff00) | (uint8_t)Wire.read() ) );
       break;
     case BWD:
       pheripherals.Wheels.backward();
       break;
     case BWD_DIST:
-      //backwardDistance( (uint16_t)( ((((uint8_t)Wire.read()) << 8) & 0xff00) | (uint8_t)Wire.read() ) );
+      backwardDistance( (uint8_t)Wire.read(), (uint16_t)( ((((uint8_t)Wire.read()) << 8) & 0xff00) | (uint8_t)Wire.read() ) );
       break;
     case STB:
       pheripherals.Wheels.standby();
@@ -292,8 +296,8 @@ void Blink_OS::_SCHEDULER()
     lastRightDisplacment = _rightWheelDisplacement;
 
     #ifdef SPEED_CONTROL
-    float Error = _targetSpeed - _wheelSpeed;
-    int power = 127 + 10*(Error);
+    float Error = abs(_targetSpeed - _wheelSpeed);
+    int power = map(Error, 0, 33, 0, 255);
     pheripherals.Wheels.setPower(abs(power));
     
     #endif

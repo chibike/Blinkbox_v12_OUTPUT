@@ -12,12 +12,14 @@ void ShiftRegisterObject::begin( uint8_t latch )
   SPI.setClockDivider(SPI_CLOCK_DIV2);
   SPI.begin();
 
+  STATE = 0x00;
+  _update();
   _destroyed = false;
 }
 
 void ShiftRegisterObject::end()
 {
-  _state = 0x00;
+  STATE = 0x00;
   _flashState = 0x00;
   undoFlash(0xff);
   _destroyed = true;
@@ -27,40 +29,40 @@ void ShiftRegisterObject::end()
 void ShiftRegisterObject::_update()
 {
   if (_destroyed == true){return;}
-  SPI.transfer(_state);
+  SPI.transfer(STATE);
   digitalWrite(_latch, HIGH);digitalWrite( _latch, LOW );
 }
 
 void ShiftRegisterObject::setHigh( uint8_t index )
 {
   if (_destroyed == true){return;}
-  bitWrite(_state, index, HIGH);
+  bitWrite(STATE, index, HIGH);
   _update();
 }
 
 void ShiftRegisterObject::setLow( uint8_t index )
 {
   if (_destroyed == true){return;}
-  bitWrite(_state, index, LOW);
+  bitWrite(STATE, index, LOW);
   _update();
 }
 
 byte ShiftRegisterObject::state()
 {
   if (_destroyed == true){return 0x00;}
-  return _state;
+  return STATE;
 }
 
 bool ShiftRegisterObject::getState( uint8_t index )
 {
   if (_destroyed == true){return false;}
-  return bitRead(_state, index);
+  return bitRead(STATE, index);
 }
 
 void ShiftRegisterObject::setState( byte state )
 {
   if (_destroyed == true){return;}
-  _state = state;
+  STATE = state;
   _update();
 }
 
@@ -97,13 +99,13 @@ void ShiftRegisterObject::flashUpdate()
   switch(flashCount)
   {
     case true:
-      _state = _state & (~_flashState);
+      STATE = STATE & (~_flashState);
       break;
     default:
-      _state = _state | _flashState;
+      STATE = STATE | _flashState;
       break;
   }
   flashCount = !flashCount;
-  setState( _state );
+  setState( STATE );
 }
 

@@ -1,19 +1,43 @@
 #include <Arduino.h>
+#define FAN_INDEX 0
 
 Blink_OS Blink_OS_v12;
 void setup()
 {
   Serial.begin(9600);
+  Serial.println("Starting...");
   Blink_OS_v12.begin();
-  Blink_OS_v12.fd_debug(120, 40);
-  //Blink_OS_v12.pheripherals.CompassSensor.setTargetHeading( Blink_OS_v12.pheripherals.CompassSensor.getHeading() );
+  Blink_OS_v12.pheripherals.Lights.flashLights();
+  Blink_OS_v12.pheripherals.ShiftRegister.setHigh(FAN_INDEX);
+  Blink_OS_v12.pheripherals.Steering.set2center();
+
+  Blink_OS_v12.pheripherals.Horn.on();
+  delay(70);
+  Blink_OS_v12.pheripherals.Horn.off();
+  delay(210);
+  Blink_OS_v12.pheripherals.Horn.on();
+  delay(70);
+  Blink_OS_v12.pheripherals.Horn.off();
+
+  delay(750);
+
+  Blink_OS_v12.pheripherals.Horn.on();
+  delay(70);
+  Blink_OS_v12.pheripherals.Horn.off();
+  delay(210);
+  Blink_OS_v12.pheripherals.Horn.on();
+  delay(70);
+  Blink_OS_v12.pheripherals.Horn.off();
+  
 }
 
 void loop()
 {
-  //Serial.print("Target Error = ");
-  //Serial.println( Blink_OS_v12.pheripherals.CompassSensor.getTargetDeviation() );
-  delay(750);
+  Serial.println("In loop");
+  delay(1000);
+  //Blink_OS_v12.pheripherals.Steering.setheading(40);
+  delay(1000);
+  //Blink_OS_v12.pheripherals.Steering.setheading(-40);
 }
 
 void RIGHT_WHEEL_ISR()

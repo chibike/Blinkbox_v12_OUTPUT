@@ -6,7 +6,7 @@ SteeringObject::SteeringObject()
 void SteeringObject::begin( uint8_t pin )
 {
   _myServo.attach(pin);
-  _center = 100;
+  _center = 103;
   _angle = 0;
   _maxAngle = _center + 45;
   _minAngle = _center - 45;
