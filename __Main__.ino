@@ -10,34 +10,25 @@ void setup()
   Blink_OS_v12.pheripherals.Lights.flashLights();
   Blink_OS_v12.pheripherals.ShiftRegister.setHigh(FAN_INDEX);
   Blink_OS_v12.pheripherals.Steering.set2center();
+  Blink_OS_v12.runStartSequence();
 
-  Blink_OS_v12.pheripherals.Horn.on();
-  delay(70);
-  Blink_OS_v12.pheripherals.Horn.off();
-  delay(210);
-  Blink_OS_v12.pheripherals.Horn.on();
-  delay(70);
-  Blink_OS_v12.pheripherals.Horn.off();
-
-  delay(750);
-
-  Blink_OS_v12.pheripherals.Horn.on();
-  delay(70);
-  Blink_OS_v12.pheripherals.Horn.off();
-  delay(210);
-  Blink_OS_v12.pheripherals.Horn.on();
-  delay(70);
-  Blink_OS_v12.pheripherals.Horn.off();
-  
+  //Blink_OS_v12.forwardDistance(150, 70);
 }
 
 void loop()
 {
   Serial.println("In loop");
-  delay(1000);
-  //Blink_OS_v12.pheripherals.Steering.setheading(40);
-  delay(1000);
-  //Blink_OS_v12.pheripherals.Steering.setheading(-40);
+  switch( commandVar )
+  {
+    case FWD_DIST:
+      commandVar = NONE_CMD;
+      Blink_OS_v12.forwardDistance(150, distanceVar);//powerVar, distanceVar);
+      break;
+    case BWD_DIST:
+      commandVar = NONE_CMD;
+      Blink_OS_v12.backwardDistance(150, distanceVar);//powerVar, distanceVar);
+      break;
+  }
 }
 
 void RIGHT_WHEEL_ISR()
@@ -63,4 +54,13 @@ void REQUEST_EVENT()
 ISR(TIMER2_COMPA_vect)
 {
   Blink_OS_v12._SCHEDULER();
+}
+
+bool onTime(unsigned long lastUpdateTime, uint16_t waitTime)
+{
+  if (millis() - lastUpdateTime >= waitTime)
+  {
+    return true;
+  }
+  return false;
 }

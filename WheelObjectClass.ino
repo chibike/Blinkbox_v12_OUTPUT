@@ -49,8 +49,8 @@ void WheelObject::backward( uint8_t power )
 {
   if (_destroyed == true){return;}
   _power = power;
-  digitalWrite(_in1, HIGH);
-  digitalWrite(_in2, LOW);
+  digitalWrite(_in1, LOW);
+  digitalWrite(_in2, HIGH);
   analogWrite(_pwm, _power);
   digitalWrite(_stb, HIGH);
 }
@@ -58,8 +58,8 @@ void WheelObject::backward( uint8_t power )
 void WheelObject::backward()
 {
   if (_destroyed == true){return;}
-  digitalWrite(_in1, HIGH);
-  digitalWrite(_in2, LOW);
+  digitalWrite(_in1, LOW);
+  digitalWrite(_in2, HIGH);
   analogWrite(_pwm, _power);
   digitalWrite(_stb, HIGH);
 }

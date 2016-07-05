@@ -6,17 +6,43 @@
 //#define SPEED_CONTROL
 #define I2C_ADDRESS 8
 #define MCU2_ADDRESS 7
-#define RESTART_PIN 0
 #define RIGHT_CHA_PIN 2
 #define RIGHT_CHB_PIN A1
 #define LEFT_CHA_PIN  3
 #define LEFT_CHB_PIN  7
+
+#define STOP_CMD    0x00
+#define FWD         0x01
+#define FWD_DIST    0x02
+#define BWD         0x03
+#define BWD_DIST    0x04
+#define STB         0x05
+#define ST_HD       0x06
+#define ST_PWR      0x08
+#define LT_IND      0x09
+#define RT_IND      0x10
+#define FL_AL       0x11
+#define HDL         0x12
+#define FL_HDL      0x13
+#define FL_HRN      0x14
+#define PAUSE       0x15
+#define PLAY        0x16
+#define FOLLOW_LINE 0x17
+#define TRN_FWD     0x20
+#define TRN_BWD     0x21
+#define AVD_OBS     0x23
+#define NONE_CMD    0x50
 
 void shutdown();
 void RIGHT_WHEEL_ISR();
 void LEFT_WHEEL_ISR();
 void RECEIVE_EVENT(int howmany);
 void REQUEST_EVENT();
+
+volatile uint16_t distanceVar = 0;
+volatile uint8_t powerVar = 0;
+volatile uint8_t angleVar = 0;
+volatile uint8_t commandVar = 0;
 
 class HornObject
 {
@@ -210,6 +236,7 @@ class Blink_OS
     void arcForwardDistance(uint8_t power, int radius, unsigned int distance);
     void backwardDistance(uint8_t power, unsigned int distance);
     void arcBackwardDistance(uint8_t power, int radius, unsigned int distance);
+    void runStartSequence();
 
     void restart();
     void shutdown();
